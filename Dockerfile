@@ -37,8 +37,8 @@ WORKDIR $HOME
 # prepare default python 3.5 environment
 RUN conda install -y python=3.5.2 && \
     pip install --upgrade pip && \
-    pip install --ignore-installed --upgrade https://storage.googleapis.com/tensorflow/linux/gpu/tensorflow_gpu-1.4.0-cp35-cp35m-linux_x86_64.whl && \
-    pip install h5py jupyter keras moviepy pandas pillow sklearn flask-socketio eventlet && \
+    pip install --ignore-installed --upgrade https://storage.googleapis.com/tensorflow/linux/gpu/tensorflow_gpu-0.12.1-cp35-cp35m-linux_x86_64.whl && \
+    pip install h5py jupyter moviepy keras==1.2.0  pandas pillow sklearn flask-socketio eventlet && \
     conda install -y -c menpo opencv3=3.1.0 && \
     conda install -y matplotlib=1.5.3 && \
     conda install -y seaborn
