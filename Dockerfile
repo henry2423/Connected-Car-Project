@@ -1,6 +1,6 @@
 FROM nvidia/cuda:cudnn
 
-MAINTAINER Henry "henry2423@gmail.com"
+MAINTAINER Henry Huang "henry2423@gmail.com"
 
 # Configure environment
 ENV CONDA_DIR /opt/miniconda
@@ -8,15 +8,10 @@ ENV USER dockeruser
 ENV USERGROUP 1000
 ENV HOME /home/$USER
 
-# TensorBoard
-EXPOSE 6006
-
-# Flask Server
-EXPOSE 4567
-
 # Basic setups
-# Jupyter
 EXPOSE 8888
+EXPOSE 6006
+EXPOSE 4567
 RUN apt-get -y update && \
     apt-get install -y wget python-pip python-dev libgtk2.0-0 unzip
 
@@ -34,12 +29,10 @@ USER $USER
 ENV PATH $CONDA_DIR/bin:$PATH
 WORKDIR $HOME
 
+RUN conda install -y python=3.5
 # prepare default python 3.5 environment
-RUN conda install -y python=3.5.2 && \
-    pip install --upgrade pip && \
-    pip install --ignore-installed --upgrade https://storage.googleapis.com/tensorflow/linux/gpu/tensorflow_gpu-0.12.1-cp35-cp35m-linux_x86_64.whl && \
-    pip install h5py jupyter moviepy keras==1.2.0  pandas pillow sklearn flask-socketio eventlet && \
+RUN pip install --upgrade pip && \
+    pip install --ignore-installed --upgrade https://storage.googleapis.com/tensorflow/linux/gpu/tensorflow_gpu-0.12.0-cp35-cp35m-linux_x86_64.whl && \
+    pip install h5py jupyter keras==1.2.1 matplotlib moviepy pandas pillow sklearn flask-socketio eventlet && \
     conda install -y -c menpo opencv3=3.1.0 && \
-    conda install -y matplotlib=1.5.3 && \
     conda install -y seaborn
-
