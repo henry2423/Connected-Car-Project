@@ -1,4 +1,4 @@
-FROM nvidia/cuda:cudnn
+FROM nvidia/cuda:8.0-cudnn6-runtime-ubuntu16.04
 
 MAINTAINER Henry Huang "henry2423@gmail.com"
 
@@ -29,6 +29,7 @@ USER $USER
 ENV PATH $CONDA_DIR/bin:$PATH
 WORKDIR $HOME
 
+
 RUN conda install -y python=3.5
 # prepare default python 3.5 environment
 RUN pip install --upgrade pip && \
@@ -36,3 +37,6 @@ RUN pip install --upgrade pip && \
     pip install h5py jupyter keras matplotlib moviepy pandas pillow sklearn flask-socketio eventlet && \
     conda install -y -c menpo opencv3&& \
     conda install -y seaborn
+
+# For CUDA profiling, TensorFlow requires CUPTI.
+ENV LD_LIBRARY_PATH /usr/local/cuda/extras/CUPTI/lib64:$LD_LIBRARY_PATH
