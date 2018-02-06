@@ -53,6 +53,9 @@ controller = SimplePIController(0.1, 0.002)
 set_speed = 15
 controller.set_desired(set_speed)
 
+MIN_SPEED = 10
+MAX_SPEED = 25
+speed_limit = MAX_SPEED
 
 @sio.on('telemetry')
 def telemetry(sid, data):
@@ -62,7 +65,7 @@ def telemetry(sid, data):
         # The current throttle of the car
         throttle = data["throttle"]
         # The current speed of the car
-        speed = data["speed"]
+        speed = float(data["speed"])
         # The current image from the center camera of the car
         imgString = data["image"]
         image = Image.open(BytesIO(base64.b64decode(imgString)))
@@ -71,7 +74,14 @@ def telemetry(sid, data):
         image_array = process_image(image_array)
         steering_angle = float(model.predict(image_array[None, :, :, :], batch_size=1))
 
-        throttle = controller.update(float(speed))
+        global speed_limit
+        if speed > speed_limit:
+            speed_limit = MIN_SPEED  # slow down
+        else:
+            speed_limit = MAX_SPEED
+        throttle = 1.0 - steering_angle**2 - (speed/speed_limit)**2
+        
+        #throttle = controller.update(float(speed))
 
         print(steering_angle, throttle)
         send_control(steering_angle, throttle)
