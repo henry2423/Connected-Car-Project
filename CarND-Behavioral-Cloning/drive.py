@@ -21,6 +21,12 @@ app = Flask(__name__)
 model = None
 prev_image_array = None
 
+#image process(crop the image size)
+def process_image(image):
+    image = image[60:-20,:,:]
+    image = cv2.resize(image,(0,0),fx=0.5,fy=0.5)
+    return image
+
 
 class SimplePIController:
     def __init__(self, Kp, Ki):
@@ -61,6 +67,8 @@ def telemetry(sid, data):
         imgString = data["image"]
         image = Image.open(BytesIO(base64.b64decode(imgString)))
         image_array = np.asarray(image)
+        # Do the image cropping
+        image_array = process_image(image_array)
         steering_angle = float(model.predict(image_array[None, :, :, :], batch_size=1))
 
         throttle = controller.update(float(speed))
