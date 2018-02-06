@@ -22,9 +22,9 @@ model = None
 prev_image_array = None
 
 #image process(crop the image size)
+import cv2
 def process_image(image):
-    image = image[60:-20,:,:]
-    image = cv2.resize(image,(0,0),fx=0.5,fy=0.5)
+    image = cv2.resize(image, (200,66), fx=0.5, fy=0.5)
     return image
 
 
@@ -50,7 +50,7 @@ class SimplePIController:
 
 
 controller = SimplePIController(0.1, 0.002)
-set_speed = 9
+set_speed = 15
 controller.set_desired(set_speed)
 
 
