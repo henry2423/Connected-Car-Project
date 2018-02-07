@@ -24,7 +24,8 @@ prev_image_array = None
 #image process(crop the image size)
 import cv2
 def process_image(image):
-    image = cv2.resize(image, (200,66), fx=0.5, fy=0.5)
+    image = image[40:,::]
+    image = cv2.resize(image, (200,66), fx=0, fy=0)
     return image
 
 
