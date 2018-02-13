@@ -7,7 +7,7 @@
 * Test that the model successfully drives around track one without leaving the road
 * Summarize the results with a written report
 
-#### File Structure
+### File Structure
 
 My project includes the following files:
 
@@ -193,12 +193,12 @@ for time in range(10):
     print('Time ',time+1)
 ```
 
-### 5. Results
+### Results
 
 Here are the the results and performance of my model in the track 1, click the link below to see the simulation video: 
 [Simulation on Track 1] (https://youtu.be/dCODaYC2NGc)
 
-### 6. Acknowledgements
+### Acknowledgements
 
 Thanks to lots of developer who had already took the class and shared their implementation online. They gave me really much great idea on the data augmentation and training strategies. Here are my reference sources:
 
