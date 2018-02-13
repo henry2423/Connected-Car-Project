@@ -1,2 +1,4 @@
 .git/
 .ipynb_checkpoints/
+CarND-Behavioral-Cloning/time*
+CarND-Behavioral-Cloning/Graph/
