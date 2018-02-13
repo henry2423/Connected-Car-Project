@@ -125,7 +125,7 @@ Here is a visualization of the augmentation result
 
 #### 3. Model architecture 
 
-My model is base on the [NVIDIA paper] (https://images.nvidia.com/content/tegra/automotive/images/2016/solutions/pdf/end-to-end-dl-using-px.pdf), including 1 Lambda layer, 5 Conv2D layers, 1 Dropout layer and 4 Dense layers.
+My model is base on the [NVIDIA paper](https://images.nvidia.com/content/tegra/automotive/images/2016/solutions/pdf/end-to-end-dl-using-px.pdf), including 1 Lambda layer, 5 Conv2D layers, 1 Dropout layer and 4 Dense layers.
 
 Additionally, The model contains dropout layer in order to reduce overfitting (between Conv2D and Flatten, see the code above).
 
