@@ -7,3 +7,7 @@ docker run -it --rm -p <outside port>:8888 -u root -v <mount file location>:/hom
 
 # How to run the bash make a fine tune
 docker exec -it <docker ID> /bin/bash
+
+
+# How to monitor the GPU status
+watch -n 1 nvidia-smi 
