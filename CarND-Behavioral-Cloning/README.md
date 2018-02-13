@@ -44,7 +44,7 @@ print(track_log.shape)
 
 #### 2. Data Preprocessing
 
-To make sure the training wasn't overfitted, I'v implemented some data augmentation before training. 
+To make sure the training wasn't overfitted, I had implemented some data augmentation before training. 
 
 
 - Flipping Images and Steering Measurements
