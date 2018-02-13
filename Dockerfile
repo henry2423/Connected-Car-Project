@@ -34,9 +34,16 @@ RUN conda install -y python=3.5
 # prepare default python 3.5 environment
 RUN pip install --upgrade pip && \
     pip install --ignore-installed --upgrade https://storage.googleapis.com/tensorflow/linux/gpu/tensorflow_gpu-1.3.0-cp35-cp35m-linux_x86_64.whl && \
-    pip install h5py jupyter keras matplotlib moviepy pandas pillow sklearn flask-socketio eventlet && \
+    pip install h5py jupyter keras==2.1.3 matplotlib moviepy pandas pillow sklearn flask-socketio eventlet && \
     conda install -y -c menpo opencv3&& \
     conda install -y seaborn
 
 # For CUDA profiling, TensorFlow requires CUPTI.
 ENV LD_LIBRARY_PATH /usr/local/cuda/extras/CUPTI/lib64:$LD_LIBRARY_PATH
+
+#jupyter custom theme setting
+#RUN pip install jupyterthemes && \
+#    pip install --no-dependencies jupyterthemes==0.18.2
+
+#RUN jt -t onedork -tf merriserif -tfs 10 -fs 11 -nf ptsans -nfs 11 -T -N -f dejavu
+
