@@ -18,10 +18,9 @@
 3. Use preprocesses/segment_h5py.py to generate the training set and validating set (will open up opencv to analysis bag records)
 4. Use training/Train.py tp train the model (it's better to move out files of training/ to fix the module missing issue)
 
+## Notes
+### 1. If any interruption comes up, check with the path setting of every .py files first.
 
-### If any interruption comes up, check with the path setting of every .py files first.
-
-
-### Here is the sample files structure of bag records. First you have to mkdir /new/bag/ with all original bag file in it. Second preprocess.py will generate meta/ and rgb_1to4. Then the segment_h5py.py will generate hdf5/ for training.
+### 2. Here is the sample files structure of bag records. First you have to mkdir /new/bag/ with all original bag file in it. Second preprocess.py will generate meta/ and rgb_1to4. Then the segment_h5py.py will generate hdf5/ for training.
 
 ![Sample data structure](Sample-bag-record.png)
