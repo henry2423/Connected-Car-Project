@@ -184,7 +184,7 @@ def function_set_paths(p=opj(bair_car_data_path)):
     I[rgb_1to4_path] = opj(p,'rgb_1to4')
     I[runs] = sgg(opj(I[meta_path],'*'))
     for j in range(len(I[runs])):
-        I[runs][j] = fname(I[runs][j])
+        I[runs][j] = fname(I[runs][j])   # get file name
     I[run_] = I[runs][0]
     cprint('meta_path = '+I[meta_path])
 SP = function_set_paths
@@ -256,7 +256,7 @@ def function_list_runs(rng=None,auto_direct_labelling=False):
             if I[run_labels][r][k] != False:
                 if k != only_states_1_and_6_good:
                     labeled = True
-                labels_str += d2n(i_label_abbreviations[k],':',I[run_labels][r][k],' ')
+                labels_str += d2n(i_label_abbreviations[k],':',I[run_labels][r][k],' ') #concatenate the string with no space 
         if labeled:
             c = 'yellow'
         else:
@@ -266,7 +266,7 @@ def function_list_runs(rng=None,auto_direct_labelling=False):
 LR = function_list_runs
 #LR() # If this is not done first, other things don't work properly.
 
-
+## READ ME: we can set label for dataset
 def function_set_label(k,v=True):
     """
     function_set_label(k,v)
@@ -290,7 +290,7 @@ def function_set_run(j):
     global I
     I[run_] = I[runs][j]
     #cprint(run_ + ' = ' + I[run_])
-    Bag_Folder_filename = gg(opj(I[meta_path],I[run_],'Bag_Folder*'))[0]
+    Bag_Folder_filename = gg(opj(I[meta_path],I[run_],'Bag_Folder*'))[0]  #get the file of /meta/bag/Bag_Folder.pkl
     B = load_obj(Bag_Folder_filename)
     I[B_] = B
     CR()
@@ -582,7 +582,11 @@ def load_animate_hdf5(path,start_at_time=0):
             mi_or_cv2(img)
 A5 = load_animate_hdf5
 
-def function_save_hdf5(run_num=None,dst_path=opj(bair_car_data_path,'hdf5/runs'),flip=False):
+def function_save_hdf5(run_num=None, dst_path=opj(bair_car_data_path, 'hdf5/runs'), flip=False):
+    '''
+    The function is used to get the Bags data, and try to flips it and save to hdf5/runs.
+    In the mean time, the function will only use the good data sequence with state_one_step flag
+    '''
     if run_num != None:
         CA()
         SR(run_num)
@@ -591,7 +595,7 @@ def function_save_hdf5(run_num=None,dst_path=opj(bair_car_data_path,'hdf5/runs')
     seg_lens = []
     B = I[B_]
     L = B['left_image_bound_to_data']
-    sos=B['data']['state_one_steps']
+    sos=B['data']['state_one_steps']  ## DS can be refered from /libs/type_handlers/Bag_Folder.py -> look likes record the total count of good_timestamps
 
     segment_list = []
 
@@ -675,7 +679,31 @@ def function_save_hdf5(run_num=None,dst_path=opj(bair_car_data_path,'hdf5/runs')
 
 
 # filter out left and out in files
-def load_hdf5_steer_hist(path,dst_path):
+def load_hdf5_steer_hist(path, dst_path):
+    '''
+    Data Structure in hdf5 file is like
+    gsegments[opj(str(i),'left_timestamp')] = segment
+    gsegments[opj(str(i),'left')] = np.array(left_image_list)
+    gsegments[opj(str(i),'right')] = np.array(right_image_list)
+    gsegments[opj(str(i),'steer')] = np.array(steer_list)
+    gsegments[opj(str(i),'motor')] = np.array(motor_list)
+    gsegments[opj(str(i),'state')] = np.array(state_list)
+
+    glabel is still unknown
+    glabels = F.create_group('labels')
+    if flip:
+        glabels['flip'] = np.array([1])
+    else:
+        glabels['flip'] = np.array([0])    
+    for l in i_labels:
+        if l in I[run_labels][I[run_]]:
+            if I[run_labels][I[run_]][l]:
+                glabels[l] = np.array([1])
+            else:
+                glabels[l] = np.array([0])
+        else:
+            glabels[l] = np.array([0])
+    '''
     if len(gg(opj(dst_path,fname(path).replace('hdf5','state_hist_list.pkl')))) == 1:
         print(opj(dst_path,fname(path).replace('hdf5','state_hist_list.pkl'))+' exists')
         return
@@ -684,24 +712,25 @@ def load_hdf5_steer_hist(path,dst_path):
         unix('mkdir -p '+dst_path)
         low_steer = []
         high_steer = []
-        l,s=function_load_hdf5(path)
+        l,s=function_load_hdf5(path)  ## l -> Label, s -> segments
         pb = ProgressBar(len(s))
         state_hist_list = []
-        for h in range(len(s)):
+        for h in range(len(s)): 
             pb.animate(h)
             state_hist = np.zeros(8)
-            n = str(h)
+            n = str(h)  ## get the left_timestamp
             for i in range(len(s[n][left])):
                 state_hist[int(s[n][state][i])] += 1
                 if i < 2:
                     smooth_steer = s[n][steer][i]
                 else:
-                    smooth_steer = (s[n][steer][i] + 0.5*s[n][steer][i-1] + 0.25*s[n][steer][i-2])/1.75
+                    smooth_steer = (s[n][steer][i] + 0.5*s[n][steer][i-1] + 0.25*s[n][steer][i-2])/1.75  
+                ## decide the steer after smoothing
                 if smooth_steer < 43 or smooth_steer > 55:
-                    high_steer.append([h,i,int(round(smooth_steer))])
+                    high_steer.append([h,i,int(round(smooth_steer))])  # Datastructure of steer ["Index","timestamp",int(round(smooth_steer))]
                 else:
                     low_steer.append([h,i,int(round(smooth_steer))])
-            state_hist_list.append(state_hist)
+            state_hist_list.append(state_hist)  ## state histogram record
         pb.animate(h)
         assert(len(high_steer)>0)
         assert(len(low_steer)>0)       
@@ -743,7 +772,7 @@ def create_normal_and_flip_segments():
             
 def create_valid_hdf5_data_moments():
     CS_("Goal: create valid data moments. (Time Consuming)")
-    hdf5s = sgg(opj(bair_car_data_path,'hdf5/runs/*.hdf5'))
+    hdf5s = sgg(opj(bair_car_data_path,'hdf5/runs/*.hdf5')) #contain original bag and flip bag hdf5 file
     ctr = 0
     for h in hdf5s:
         ctr += 1
@@ -754,12 +783,12 @@ def create_valid_hdf5_data_moments():
 def compile_run_codes():
     CS_("Goal: compile run codes. (Fast)")
     run_codes = {}
-    steer_hists = sgg(opj(bair_car_data_path,'hdf5/segment_metadata/*.state_hist_list.pkl'))
+    steer_hists = sgg(opj(bair_car_data_path,'hdf5/segment_metadata/*.state_hist_list.pkl'))  # get the steering historgram data
     ctr = 0
     combined = []
-    for s in steer_hists:
+    for s in steer_hists: # steer_hists with origial bag and flip one
         o = load_obj(s)
-        run_codes[ctr] = fname(s).replace('.state_hist_list.pkl','')
+        run_codes[ctr] = fname(s).replace('.state_hist_list.pkl','') # get the filename like bag.state_hist_list.pkl
         print ctr,run_codes[ctr]
         #for j in range(len(o)):
         #    o[j][3] = ctr
@@ -767,7 +796,7 @@ def compile_run_codes():
         ctr += 1
     #save_obj(combined,opjD('combined'))
     unix('mkdir -p '+opj(bair_car_data_path,'hdf5/segment_metadata'))
-    save_obj(run_codes,opj(bair_car_data_path,'hdf5/segment_metadata/run_codes'))
+    save_obj(run_codes,opj(bair_car_data_path,'hdf5/segment_metadata/run_codes'))  #save file using pickle
 
         
 def compile_low_steer_and_high_steer():
@@ -775,16 +804,22 @@ def compile_low_steer_and_high_steer():
     low_steer = []
     high_steer = []
     low_steer_files = sgg(opj(bair_car_data_path,'hdf5/segment_metadata/*.low_steer_data_moments.pkl'))
-    ctr = 0
+    ctr = 0  # ctr is using for combine original and flip data
     for s in low_steer_files:
+        # low_steer part
         print (ctr,s)
         q = load_obj(s)
         for i in range(len(q)):
             q[i].append(ctr)
+            '''
+            Original datastructure of steer ["Index","timestamp",int(round(smooth_steer))]
+            New datastructure will become [["Index","timestamp",int(round(smooth_steer))],ctr]
+            '''
         low_steer += q
+        # high_steer part
         q = load_obj(s.replace('.low_steer_data_moments.','.high_steer_data_moments.'))
         for i in range(len(q)):
-            q[i].append(ctr)
+            q[i].append(ctr)    
         high_steer += q
         ctr += 1
     save_obj(high_steer+low_steer,opj(bair_car_data_path,'hdf5/segment_metadata/all_valid_data_moments'))
@@ -803,7 +838,7 @@ def create_training_and_valid_dataset():
     
 
 def main():
-    SP()
+    SP() # Set Path
     LR() # If this is not done first, other things don't work properly.
     SR(0)
     if interactive_mode:
@@ -813,8 +848,8 @@ def main():
         create_normal_and_flip_segments()
         create_valid_hdf5_data_moments()
         compile_run_codes()
-        compile_low_steer_and_high_steer()
-        create_training_and_valid_dataset()                
+        compile_low_steer_and_high_steer()    
+        create_training_and_valid_dataset()   # split the dataset         
         
     
 if __name__ == '__main__':

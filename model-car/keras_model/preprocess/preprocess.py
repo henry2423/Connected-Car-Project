@@ -50,7 +50,7 @@ def main():
           + bag_folders_dst_meta_path
           + '; bag_folders_dst_rgb1to4_path: '
           + bag_folders_dst_rgb1to4_path)
-    runs = sgg(opj(bag_folders_src,'*'))
+    runs = sgg(opj(bag_folders_src,'*'))  ## Find file path in bag_folders_src/* opj->os.path.join, sgg->sorted in glob.glob
     assert(len(runs) > 0)
       
     tb = '\t'
@@ -58,6 +58,7 @@ def main():
     cprint('Preliminary check of '+bag_folders_src)
     cprint("	checking bag file sizes and run durations")
       
+    ## Check all the duration time in bag files, make sure the clock set correctly
     for r in runs:
         bags = sgg(opj(r,'*.bag'))
         print(bags)

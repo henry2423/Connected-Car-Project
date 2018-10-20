@@ -40,7 +40,7 @@ def preprocess_bag_data(bag_folder_path,bagfile_range=[]):
         try:
             cprint(b,'yellow')
 
-            bag = rosbag.Bag(b)
+            bag = rosbag.Bag(b)  # get bag instance from bag_files
 
             for topic in single_value_topics:
                 for m in bag.read_messages(topics=['/bair_car/'+topic]):
@@ -119,7 +119,7 @@ def preprocess_bag_data(bag_folder_path,bagfile_range=[]):
     unix('mkdir -p '+dst_path)
 
     print """save_obj(left_image_bound_to_data,opj(dst_path,'left_image_bound_to_data')) """
-    save_obj(left_image_bound_to_data,opj(dst_path,'left_image_bound_to_data'))
+    save_obj(left_image_bound_to_data,opj(dst_path,'left_image_bound_to_data'))  ## use pickle to save sequence files (maybe can use cPickle to spee up)
 
     print """save_obj(preprocessed_data,opj(dst_path,'preprocessed_data'))"""
     save_obj(preprocessed_data,opj(dst_path,'preprocessed_data'))
