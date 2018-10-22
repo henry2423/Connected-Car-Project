@@ -127,24 +127,26 @@ EXPOSE 4567
 
 # Install pip
 USER root
-RUN apt-get install -y wget python-pip python-dev libgtk2.0-0 unzip libblas-dev liblapack-dev libhdf5-dev
+RUN apt-get install -y wget python-pip python-dev libgtk2.0-0 unzip libblas-dev liblapack-dev libhdf5-dev && \
+    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
+    python get-pip.py
 
 # Install conda
-RUN wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -q -O /tmp/miniconda.sh && \
-    bash /tmp/miniconda.sh -b -p $CONDA_DIR && \
-    rm /tmp/miniconda.sh && \
-    chown $USER $CONDA_DIR -R
+# RUN wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -q -O /tmp/miniconda.sh && \
+#     bash /tmp/miniconda.sh -b -p $CONDA_DIR && \
+#     rm /tmp/miniconda.sh && \
+#     chown $USER $CONDA_DIR -R
 
-# Switch to local user
-USER $USER
-ENV PATH $CONDA_DIR/bin:$PATH
-WORKDIR $HOME
+# # Switch to local user
+# USER $USER
+# ENV PATH $CONDA_DIR/bin:$PATH
+# WORKDIR $HOME
 
-RUN conda install -y python=2.7
+# RUN conda install -y python=2.7
 # # prepare default python 2.7 environment
-RUN pip install --upgrade pip && \
-    pip install --ignore-installed --upgrade https://storage.googleapis.com/tensorflow/linux/gpu/tensorflow_gpu-1.11.0-cp27-none-linux_x86_64.whl && \
-    pip install jupyter keras==2.2.4 matplotlib pandas scipy cprint h5py termcolor 
+USER root
+RUN pip install --ignore-installed --upgrade https://storage.googleapis.com/tensorflow/linux/gpu/tensorflow_gpu-1.11.0-cp27-none-linux_x86_64.whl && \
+    pip install jupyter keras==2.2.4 matplotlib pandas scipy cprint h5py termcolor testresources
 
 ### Switch to root user to install additional software
 USER $USER
