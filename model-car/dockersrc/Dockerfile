@@ -44,7 +44,7 @@ ENV DISPLAY=:1 \
 EXPOSE $VNC_PORT $NO_VNC_PORT
 
 ## Envrionment config
-ENV VNCPASSWD=Car2018
+ENV VNCPASSWD=hscc2018
 ENV HOME=/home/$USER \
     TERM=xterm \
     STARTUPDIR=/dockerstartup \
