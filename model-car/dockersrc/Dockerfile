@@ -1,5 +1,5 @@
 # This Dockerfile is used to build an ROS + VNC + Tensorflow image based on Ubuntu 16.04
-FROM nvidia/cuda:9.0-cudnn7-devel-ubuntu16.04
+FROM nvidia/cuda:9.2-cudnn7-devel-ubuntu16.04
 
 MAINTAINER Henry Huang "https://github.com/henry2423"
 ENV REFRESHED_AT 2018-10-22
@@ -29,10 +29,10 @@ RUN groupadd $USER && \
     chsh -s /bin/bash $USER
 
 ### VNC Installation
-LABEL io.k8s.description="Headless VNC Container with Xfce window manager, firefox and chromium" \
-      io.k8s.display-name="Headless VNC Container based on Ubuntu" \
-      io.openshift.expose-services="6901:http,5901:xvnc" \
-      io.openshift.tags="vnc, ubuntu, xfce" \
+LABEL io.k8s.description="VNC Container with ROS with Xfce window manager, firefox and chromium" \
+      io.k8s.display-name="VNC Container with ROS based on Ubuntu" \
+      io.openshift.expose-services="6901:http,5901:xvnc,6006:tnesorboard" \
+      io.openshift.tags="vnc, ros, zed, tensorflow, ubuntu, xfce" \
       io.openshift.non-scalable=true
 
 ## Connection ports for controlling the UI:
