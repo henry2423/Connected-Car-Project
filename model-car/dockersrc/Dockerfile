@@ -87,11 +87,10 @@ RUN $INST_SCRIPTS/set_user_permission.sh $STARTUPDIR $HOME
 # Setup the ZED SDK
 RUN apt-get update
 RUN apt-get install lsb-release wget less udev sudo apt-transport-https -y
-
-#switch to user to install ros env
-USER $USER
 RUN wget -O ZED_SDK_Linux_Ubuntu16.run https://download.stereolabs.com/zedsdk/2.6/ubuntu 
 RUN echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
+#switch to user to install ros env
+USER $USER
 RUN chmod +x ZED_SDK_Linux_Ubuntu16.run ; ./ZED_SDK_Linux_Ubuntu16.run silent
 
 # Install some other packages
