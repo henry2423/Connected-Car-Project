@@ -87,11 +87,15 @@ RUN $INST_SCRIPTS/set_user_permission.sh $STARTUPDIR $HOME
 # Setup the ZED SDK
 RUN apt-get update
 RUN apt-get install lsb-release wget less udev sudo apt-transport-https -y
+
+#switch to user to install ros env
+USER $USER
 RUN wget -O ZED_SDK_Linux_Ubuntu16.run https://download.stereolabs.com/zedsdk/2.6/ubuntu 
 RUN echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
 RUN chmod +x ZED_SDK_Linux_Ubuntu16.run ; ./ZED_SDK_Linux_Ubuntu16.run silent
 
 # Install some other packages
+USER root
 RUN apt-get install -y cmake usbutils
 
 ### ROS Installation
@@ -148,7 +152,7 @@ USER root
 RUN pip install --ignore-installed --upgrade https://storage.googleapis.com/tensorflow/linux/gpu/tensorflow_gpu-1.11.0-cp27-none-linux_x86_64.whl && \
     pip install jupyter keras==2.2.4 matplotlib pandas scipy cprint h5py termcolor testresources
 
-### Switch to root user to install additional software
+### Switch to user to install additional software
 USER $USER
 
 ENTRYPOINT ["/dockerstartup/vnc_startup.sh"]
