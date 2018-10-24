@@ -1,5 +1,5 @@
 # This Dockerfile is used to build an ROS + VNC + Tensorflow image based on Ubuntu 16.04
-FROM nvidia/cuda:9.2-cudnn7-devel-ubuntu16.04
+FROM nvidia/cuda:9.0-cudnn7-devel-ubuntu16.04
 
 MAINTAINER Henry Huang "https://github.com/henry2423"
 ENV REFRESHED_AT 2018-10-22
@@ -87,14 +87,11 @@ RUN $INST_SCRIPTS/set_user_permission.sh $STARTUPDIR $HOME
 # Setup the ZED SDK
 RUN apt-get update
 RUN apt-get install lsb-release wget less udev sudo apt-transport-https -y
-RUN wget -O ZED_SDK_Linux_Ubuntu16.run https://download.stereolabs.com/zedsdk/2.6/ubuntu 
+RUN wget -O ZED_SDK_Linux_Ubuntu16.run https://download.stereolabs.com/zedsdk/2.6/ubuntu_cuda9 
 RUN echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
-#switch to user to install ros env
-USER $USER
 RUN chmod +x ZED_SDK_Linux_Ubuntu16.run ; ./ZED_SDK_Linux_Ubuntu16.run silent
 
 # Install some other packages
-USER root
 RUN apt-get install -y cmake usbutils
 
 ### ROS Installation
@@ -151,8 +148,8 @@ USER root
 RUN pip install --ignore-installed --upgrade https://storage.googleapis.com/tensorflow/linux/gpu/tensorflow_gpu-1.11.0-cp27-none-linux_x86_64.whl && \
     pip install jupyter keras==2.2.4 matplotlib pandas scipy cprint h5py termcolor testresources
 
-### Switch to user to install additional software
-USER $USER
+### Switch to root to install additional software
+USER root
 
 ENTRYPOINT ["/dockerstartup/vnc_startup.sh"]
 CMD [sh -c "jupyter notebook --ip=* --no-browser --allow-root"]
