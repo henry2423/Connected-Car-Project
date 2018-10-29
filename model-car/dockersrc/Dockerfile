@@ -20,13 +20,22 @@ RUN sudo apt-get install -y apt-transport-https && \
     sudo apt-get install -y code
 
 # Configure user
-ARG user=hscc
+ARG user=ros
+ARG passwd=ros
+ARG uid=1000
+ARG gid=1000
 ENV USER=$user
+ENV PASSWD=$passwd
+ENV UID=$uid
+ENV GID=$gid
 RUN groupadd $USER && \
     useradd --create-home --no-log-init -g $USER $USER && \
     usermod -aG sudo $USER && \
-    echo "$USER:$USER" | chpasswd && \
-    chsh -s /bin/bash $USER
+    echo "$PASSWD:$PASSWD" | chpasswd && \
+    chsh -s /bin/bash $USER && \
+    # Replace 1000 with your user/group id
+    usermod  --uid $UID $USER && \
+    groupmod --gid $GID $USER
 
 ### VNC Installation
 LABEL io.k8s.description="VNC Container with ROS with Xfce window manager, firefox and chromium" \
@@ -44,7 +53,7 @@ ENV DISPLAY=:1 \
 EXPOSE $VNC_PORT $NO_VNC_PORT
 
 ## Envrionment config
-ENV VNCPASSWD=hscc2018
+ENV VNCPASSWD=vncpassword
 ENV HOME=/home/$USER \
     TERM=xterm \
     STARTUPDIR=/dockerstartup \

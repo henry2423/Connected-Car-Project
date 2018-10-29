@@ -1,4 +1,4 @@
-# Docker container images with ROS, Zed, Xfce4 VNC Desktop, Tensorflow and Keras
+# Docker container images with ROS, ZED, Xfce4 VNC Desktop, Tensorflow and Keras
 
 This repository developed from ConSol/docker-headless-vnc-container, with provide the headless VNC environments for docker container
 
@@ -37,20 +37,20 @@ If the container runs up, you can connect to the container throught the followin
 #### 1.1) Using root (user id `0`)
 Add the `--user` flag to your docker run command:
 
-    docker run -it --user root -p 6901:6901 henry2423/ros-vnc-mcar
+    docker run -it --user root -p 5901:5901 henry2423/ros-vnc-mcar
 
 #### 1.2) Using user and group id of host system
-Add the `--user` flag to your docker run command:
+Add the `--user` flag to your docker run command (Note: uid and gui of host system may not able to map with container, which is 1000:1000. If that is the case, check with 3.1):
 
-    docker run -it -p 6901:6901 --user $(id -u):$(id -g) henry2423/ros-vnc-mcar
+    docker run -it -p 5901:5901 --user $(id -u):$(id -g) henry2423/ros-vnc-ubuntu:kinetic
 
 ### 2) Override VNC and Container environment variables
 The following VNC environment variables can be overwritten at the `docker run` phase to customize your desktop environment inside the container:
 * `VNC_COL_DEPTH`, default: `24`
 * `VNC_RESOLUTION`, default: `1920x1080`
-* `VNC_PW`, default: `hscc2018`
-* `USER`, default: `hscc`
-* `PASSWD`, default: `hscc`
+* `VNC_PW`, default: `vncpassword`
+* `USER`, default: `ros`
+* `PASSWD`, default: `ros`
 
 #### 2.1) Example: Override the VNC password
 Simply overwrite the value of the environment variable `VNC_PW`. For example in
@@ -63,6 +63,17 @@ Simply overwrite the value of the environment variable `VNC_RESOLUTION`. For exa
 the docker run command:
 
     docker run -it -p 5901:5901 -p 6901:6901 -e VNC_RESOLUTION=800x600 henry2423/ros-vnc-mcar
+
+### 3.1) Example: Mounting local directory to conatiner
+You should run with following environment variable in order to mapping same UID, GID with container, and retrieve R/W permission in container:
+
+      docker run -it -p 5901:5901 \
+        --user $(id -u):$(id -g) \
+        --env "UID=`id -u $who`" \
+        --env "GID=`id -g $who`" \
+        --volume /home/ros/Desktop:/home/ros/Desktop:rw \
+        henry2423/ros-vnc-ubuntu:kinetic
+
 
 ## Contributors
 
