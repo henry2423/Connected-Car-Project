@@ -40,7 +40,7 @@ Add the `--user` flag to your docker run command:
     docker run -it --user root -p 5901:5901 henry2423/ros-vnc-mcar
 
 #### 1.2) Using user and group id of host system
-Add the `--user` flag to your docker run command (Note: uid and gui of host system may not able to map with container, which is 1000:1000. If that is the case, check with 3.1):
+Add the `--user` flag to your docker run command (Note: uid and gui of host system may not able to map with container, which is 1000:1000. If that is the case, check with 3):
 
     docker run -it -p 5901:5901 --user $(id -u):$(id -g) henry2423/ros-vnc-ubuntu:kinetic
 
@@ -64,7 +64,7 @@ the docker run command:
 
     docker run -it -p 5901:5901 -p 6901:6901 -e VNC_RESOLUTION=800x600 henry2423/ros-vnc-mcar
 
-### 3.1) Example: Mounting local directory to conatiner
+### 3) Example: Mounting local directory to conatiner
 You should run with following environment variable in order to mapping same UID, GID with container, and retrieve R/W permission in container:
 
       docker run -it -p 5901:5901 \
