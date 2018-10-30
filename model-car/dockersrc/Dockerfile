@@ -2,7 +2,7 @@
 FROM nvidia/cuda:9.0-cudnn7-devel-ubuntu16.04
 
 MAINTAINER Henry Huang "https://github.com/henry2423"
-ENV REFRESHED_AT 2018-10-22
+ENV REFRESHED_AT 2018-10-30
 
 # Install sudo
 RUN apt-get update && \
@@ -158,7 +158,7 @@ RUN pip install --ignore-installed --upgrade https://storage.googleapis.com/tens
     pip install jupyter keras==2.2.4 matplotlib pandas scipy cprint h5py termcolor testresources
 
 ### Switch to root to install additional software
-USER root
+USER $USER
 
 ENTRYPOINT ["/dockerstartup/vnc_startup.sh"]
 CMD [sh -c "jupyter notebook --ip=* --no-browser --allow-root"]
