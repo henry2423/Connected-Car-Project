@@ -3,40 +3,33 @@ import traceback
 import logging
 
 from Parameters import ARGS
-import Data
-import Batch
+from training.Data import Data
+from training.Batch import Batch
 import Utils
 from libs.utils2 import *
 from keras import backend as K
 import matplotlib.pyplot as plt
-import tensorflow as tf
 
-config = tf.ConfigProto( device_count = {'GPU': 4 , 'CPU': 70} )
-sess = tf.Session(config=config) 
-K.set_session(sess)
-
-from nets.SqueezeNet import SqueezeNet
-from nets.Z2ColorBatchNorm import Z2ColorBatchNorm
+from nets.NvidiaNet import NvidiaNet
+#from nets.Z2ColorBatchNorm import Z2ColorBatchNorm
 
 
 def main():
-    logging.basicConfig(filename='./training.log', level=logging.DEBUG)
+    logging.basicConfig(filename='training.log', level=logging.DEBUG)
     logging.debug(ARGS)  # Log arguments
 
-    net = SqueezeNet()
+    net = NvidiaNet()
 
-#    if ARGS.resume_path is not None:
-#        cprint('Resuming w/ ' + ARGS.resume_path, 'yellow')
-#        net.model_init(ARGS.resume_path)        
-#    else:
-    
-
+    # if ARGS.resume_path is not None:
+    #     cprint('Resuming w/ ' + ARGS.resume_path, 'yellow')
+    #     net.model_init(ARGS.resume_path)        
+    # else:
     net.model_init()
     net.net.summary()    
     
     
-    data = Data.Data()
-    batch = Batch.Batch(net)
+    data = Data()
+    batch = Batch(net)
 
     # Maitains a list of all inputs to the network, and the loss and outputs for
     # each of these runs. This can be used to sort the data by highest loss and
@@ -70,7 +63,7 @@ def main():
 
                 if print_counter.step(data.train_index):
                     epoch_train_loss.export_csv(
-                        './logs/epoch%02d_train_loss.csv' %
+                        'logs/epoch%02d_train_loss.csv' %
                         (epoch,))
                     print('mode = train\n'
                           'ctr = {}\n'
@@ -105,7 +98,7 @@ def main():
                 'Avg Train Loss = {}'.format(
                     epoch_train_loss.average()))
             avg_train_loss.add(epoch, epoch_train_loss.average())
-            avg_train_loss.export_csv('./logs/avg_train_loss.csv')
+            avg_train_loss.export_csv('logs/avg_train_loss.csv')
             logging.debug('Finished training epoch #{}'.format(epoch))
             
             # Evaluate mode
@@ -118,7 +111,7 @@ def main():
 
                 if print_counter.step(data.val_index):
                     epoch_val_loss.export_csv(
-                        './logs/epoch%02d_val_loss.csv' %
+                        'logs/epoch%02d_val_loss.csv' %
                         (epoch,))
                     print('mode = validation\n'
                           'ctr = {}\n'
@@ -133,7 +126,7 @@ def main():
 
             data.val_index.epoch_complete = False
             avg_val_loss.add(epoch, epoch_val_loss.average())
-            avg_val_loss.export_csv('./logs/avg_val_loss.csv')
+            avg_val_loss.export_csv('logs/avg_val_loss.csv')
             logging.debug('Finished validation epoch #{}'.format(epoch))
             logging.info('Avg Val Loss = {}'.format(epoch_val_loss.average()))
             Utils.save_net(
@@ -147,9 +140,9 @@ def main():
         # Interrupt Saves
         Utils.save_net('interrupt_save', net)
         epoch_train_loss.export_csv(
-            './logs/interrupt%02d_train_loss.csv' %
+            'logs/interrupt%02d_train_loss.csv' %
             (epoch,))
-        epoch_val_loss.export_csv('./logs/interrupt%02d_val_loss.csv' % (epoch,))
+        epoch_val_loss.export_csv('logs/interrupt%02d_val_loss.csv' % (epoch,))
 
 
 if __name__ == '__main__':

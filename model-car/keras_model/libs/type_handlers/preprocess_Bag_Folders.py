@@ -18,7 +18,7 @@ def preprocess_Bag_Folders(
     for bfp in bag_folders_paths_list:
 
         try:
-
+            print('BFP:')
             print bfp
             run_name = bfp.split('/')[-1]
 
@@ -43,7 +43,7 @@ def preprocess_Bag_Folders(
 
             if graphics:
                 figure(run_name+' timecourses')
-                plot(BF['data']['raw_timestamps'],100*BF['data']['encoder'],'y')
+                # plot(BF['data']['raw_timestamps'],100*BF['data']['encoder'],'y')
                 plot(BF['data']['raw_timestamps'],BF['data']['state_one_steps'],'bo-')
                 plot(BF['data']['good_start_timestamps'],zeros(len(BF['data']['good_start_timestamps']))+100,'go')
                 plot(BF['data']['raw_timestamps'],2000*BF['data']['raw_timestamp_deltas'],'r')
@@ -57,9 +57,10 @@ def preprocess_Bag_Folders(
                 #plot(BF['data']['raw_timestamps'],100*BF['data']['acc_z'],'r')
 
                 figure(run_name+' scatter')
-                plot(BF['data']['steer'][BF['data']['good_start_indicies']],BF['data']['gyro_x'][BF['data']['good_start_indicies']],'o')
+                # plot(BF['data']['steer'][BF['data']['good_start_indicies']],BF['data']['gyro_x'][BF['data']['good_start_indicies']],'o')
+                plot(BF['data']['steer'][BF['data']['good_start_indicies']],BF['data']['motor'][BF['data']['good_start_indicies']],'o')
 
-                plt.pause(0.001)
+                plt.pause(10)
 
         except Exception as e:
             cprint("********** Exception ***********************",'red')

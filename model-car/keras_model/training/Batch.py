@@ -33,10 +33,10 @@ class Batch:
     def fill(self, data, data_index):
         self.clear()
         self.data_ids = []
-        self.camera_data = np.zeros((ARGS.batch_size, 
-                                     ARGS.nframes * 6, 
+        self.camera_data = np.zeros((ARGS.batch_size,  
                                      self.net.input_height, 
-                                     self.net.input_width))
+                                     self.net.input_width,
+                                     ARGS.nframes * 6))
         self.metadata = np.zeros((ARGS.batch_size, 
                                   self.net.meta_label, 
                                   self.net.metadata_size[0], 
@@ -65,7 +65,7 @@ class Batch:
                 list_camera_input.append(data[camera][t])
         camera_data = np.concatenate(list_camera_input, axis=2)
         camera_data = camera_data / 255. - 0.5
-        camera_data = np.transpose(camera_data, (2,0,1))
+        camera_data = np.transpose(camera_data, (0, 1, 2))
         self.camera_data[data_number, :, :, :] = camera_data
 
         # Behavioral Modes/Metadata

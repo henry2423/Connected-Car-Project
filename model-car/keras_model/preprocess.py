@@ -72,8 +72,11 @@ def main():
             #    cprint(d2s('Bagfile',b,'has size',bag_size,'which is below full size.'),'red')
             #    unix('mv '+b+' '+b+'.too_small')
 
+        
         mtimes = sorted(mtimes)
+        print('MTIMES:')
         print(mtimes)
+        print('RUNDURATION')
         run_duration = mtimes[-1]-mtimes[0]
         print(run_duration)
         assert(run_duration/60./60. < 3.) # If clock set incorrectly, this can change during run leading to year-long intervals

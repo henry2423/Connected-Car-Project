@@ -8,7 +8,7 @@ parser = argparse.ArgumentParser(  # pylint: disable=invalid-name
 
 # parser.add_argument('--gpu', default=0, type=int, help='Cuda GPU ID, \
 #                        not support, leave for keras to assign GPU resource')
-parser.add_argument('--batch-size', default=128, type=int)
+parser.add_argument('--batch-size', default=64, type=int)
 parser.add_argument('--display', dest='display', action='store_true')
 parser.add_argument('--no-display', dest='display', action='store_false')
 parser.set_defaults(display=True)
@@ -18,14 +18,13 @@ parser.add_argument('--verbose', default=True, type=bool,
 parser.add_argument('--interactive', default=False, type=bool,
                     help='Interactive mode')
 # parser.add_argument('--aruco', default=True, type=bool, help='Use Aruco data')
-parser.add_argument('--data-path', default='/home/bdd/' 
-                    + 'Desktop/training_data', type=str)
-parser.add_argument('--resume-path', default='/home/bdd/' 
-                    + 'Desktop/tmp/z2_color_squeeze_net_snap.hdf5',
+parser.add_argument('--data-path', default='/home/hscc' 
+                    + '/Desktop/dataset/', type=str)
+parser.add_argument('--resume-path', default='',
                     type=str, help='Path to'
                     + ' resume file containing network state dictionary')
-parser.add_argument('--save-path', default='/home/bdd/' 
-                    + 'Desktop/tmp', type=str, help='Path to'
+parser.add_argument('--save-path', default='/home/hscc' 
+                    + '/Desktop/save', type=str, help='Path to'
                     + ' folder to save net state dictionaries.')
 
 # nargs='+' allows for multiple arguments and stores arguments in a list

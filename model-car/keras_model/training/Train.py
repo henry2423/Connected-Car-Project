@@ -3,33 +3,33 @@ import traceback
 import logging
 
 from Parameters import ARGS
-import Data
-import Batch
+from training.Data import Data
+from training.Batch import Batch
 import Utils
 from libs.utils2 import *
 from keras import backend as K
 import matplotlib.pyplot as plt
 
-from nets.SqueezeNet import SqueezeNet
-from nets.Z2ColorBatchNorm import Z2ColorBatchNorm
+from nets.NvidiaNet import NvidiaNet
+#from nets.Z2ColorBatchNorm import Z2ColorBatchNorm
 
 
 def main():
     logging.basicConfig(filename='training.log', level=logging.DEBUG)
     logging.debug(ARGS)  # Log arguments
 
-    net = SqueezeNet()
+    net = NvidiaNet()
 
-    if ARGS.resume_path is not None:
-        cprint('Resuming w/ ' + ARGS.resume_path, 'yellow')
-        net.model_init(ARGS.resume_path)        
-    else:
-        net.model_init()
+    # if ARGS.resume_path is not None:
+    #     cprint('Resuming w/ ' + ARGS.resume_path, 'yellow')
+    #     net.model_init(ARGS.resume_path)        
+    # else:
+    net.model_init()
     net.net.summary()    
     
     
-    data = Data.Data()
-    batch = Batch.Batch(net)
+    data = Data()
+    batch = Batch(net)
 
     # Maitains a list of all inputs to the network, and the loss and outputs for
     # each of these runs. This can be used to sort the data by highest loss and
